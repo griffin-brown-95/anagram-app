@@ -1,29 +1,29 @@
 from collections import Counter
-from itertools import product
 
 class spelling_bee_solver:
     def __init__(self, word_list_file='data/words.txt'):
         self.word_list_file = word_list_file
         self.word_list = self.load_words()
-        self.word_set = set(self.word_list)  # Use a set for faster lookup
-
+    
     def load_words(self):
+        word_list = []
         with open(self.word_list_file, 'r') as file:
-            word_list = [word.strip().lower() for word in file]
+            for word in file:
+                word = word.strip().lower()
+                word_list.append(word)
         print(f"Loaded {len(word_list)} words into the list.")
         return word_list
-
+    
     def find_anagrams(self, letters, required_letter):
         letters = letters.lower()
         required_letter = required_letter.lower()
-        anagrams = set()
-
-        # Generate all combinations of letters with replacement up to a reasonable length
-        max_length = 15  # Adjust this length as necessary
-        for length in range(4, max_length + 1):
-            for combo in product(letters, repeat=length):
-                word = ''.join(combo)
-                if required_letter in word and word in self.word_set:
-                    anagrams.add(word)
-
-        return list(anagrams)
+        letters_count = Counter(letters)
+        anagrams = []
+        
+        for word in self.word_list:
+            if len(word) >= 4 and required_letter in word:
+                word_count = Counter(word)
+                if all(word_count[char] <= letters_count[char] for char in word_count):
+                    anagrams.append(word)
+                
+        return anagrams
