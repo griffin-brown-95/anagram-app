@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 from solver import spelling_bee_solver
 from collections import defaultdict
